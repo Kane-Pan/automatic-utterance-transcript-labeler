@@ -1,1 +1,1 @@
-# candor-auto-vs-reflect
+# candor-automatic-vs-reflective
