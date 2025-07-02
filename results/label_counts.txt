@@ -1,0 +1,3 @@
+Total lines: 795
+Automatic: 559	Reflective: 222	Uncertain (requires manual review): 14
+Percentage Automatic: 70.31%	Percentage Reflective: 27.92%	Percentage Uncertain: 1.76%

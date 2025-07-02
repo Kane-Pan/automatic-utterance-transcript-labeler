@@ -1,0 +1,9 @@
+name: candor_llm
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pandas
+  - requests
+  - tqdm
+  - pip
