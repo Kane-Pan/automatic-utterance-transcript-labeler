@@ -9,6 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 RAW_TRANSCRIPT_FILE = BASE_DIR/"data"/"test_transcript.csv"
 NO_BC_FILE = BASE_DIR/"results"/"no_backchannel_transcript.csv"
 CLEANED_FILE = BASE_DIR/"results"/"cleaned_transcript.csv"
+LABELED_CLEANED_FILE = BASE_DIR/"results"/"labeled_cleaned_transcript.csv"
 OUTPUT_LABELED = BASE_DIR/"results"/"labeled_transcript.csv"
 
 # LLM settings
@@ -76,6 +77,9 @@ def main():
     for i, row in tqdm(clean_df.iterrows(), total=len(clean_df), desc="Labeling..."):
         label = call_ollama(create_labeling_prompt(row.prev_utt, row.utterance))
         clean_df.at[i,"auto_label"] = label
+
+    clean_df.to_csv(LABELED_CLEANED_FILE, index=False)
+    print(f"Wrote intermediate cleaned transcript with labels to {LABELED_CLEANED_FILE} with {len(clean_df)} rows")
 
     # spread labels back to every original utterance via source_rows
     for _, row in clean_df.iterrows():
