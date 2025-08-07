@@ -1,8 +1,0 @@
-metric,value
-avg_backchannel_duration_sec (raw_transcript),0.59
-avg_automatic_duration_sec (cleaned_transcript),9.6
-avg_nonautomatic_duration_sec (cleaned_transcript),12.78
-%_backchannel (raw_transcript),42.23
-%_automatic (cleaned_transcript),31.58
-%_non_automatic (cleaned_transcript),68.42
-total_turns (cleaned_transcript),152.0
