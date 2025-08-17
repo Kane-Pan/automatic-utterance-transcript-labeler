@@ -18,22 +18,26 @@ ollama_model = "mistral:7b-instruct"
 DEFAULT_MAX_TOK = 16
 DEFAULT_TEMP = 0.0
 
-def create_labeling_prompt(prev_utt, cur_utt) -> str:
+context = """
+The following utterances are excerpted from a conversation between two speakers who are speaking online via Zoom during the COVID-19 pandemic.
+"""
+
+def create_labeling_prompt(prev_utt, cur_utt, context) -> str:
     return f"""
-You are a strict classifier for conversational utterances. You must assign one integer label from 1 to 5 based on the level of cognitive and social effort involved in the utterance.
+You are a strict classifier for conversational utterances. You must assign one integer label from 1 to 5 based on the amount of cognitive and social effort required to make the utterance.
 
 **LABELING SCALE:**
- 
-1 – The utterance requires little to no cognitive effort, usually applies to very common scripted lines like "Hi, how are you?" or "My name is Bob, what is your name?"  
-5 – The utterance shows that the speaker is highly engaged in the conversation. The utterance could be personalized, often opinionated or providing an explanation, context-specific content, showing high cognitive and social effort.
-0 – Unknown/Ambiguous: If there is genuinely insufficient context to give a certain label. 
+1 – The utterance requires little or  no cognitive effort, usually applies to very common lines people automatically say in conversations without thinking
+5 – The utterance shows that the speaker is highly engaged in the conversation. The utterance could be personalized, often opinionated or providing an explanation, context-specific content, showing high cognitive and social effort. 
 
 **RULES:**
 - Output **exactly one** integer: **0**, **1**, **2**, **3**, **4**, or **5**.  
-- Do **NOT** add any other text, punctuation, or justification.  
-- Label **0** if you cannot decide.
+- Do **NOT** add any other text, punctuation, or justification.
+- Do not be reserved in labelling utterances as **1** or **5**. Label as such if you think the utterance is very low or very high effort.
 
-**Context:**  
+**Context:**  {context}
+
+Now, classify the CURRENT utterance based on the previous utterance and the current utterance:
 Previous utterance: "{prev_utt}"  
 Current utterance to classify: "{cur_utt}"
 """
@@ -86,7 +90,7 @@ def main():
     clean_df["prev_utt"] = clean_df.utterance.shift(1).fillna("")
     clean_df["auto_label"] = ""
     for i, row in tqdm(clean_df.iterrows(), total=len(clean_df), desc="Labeling..."):
-        label = call_ollama(create_labeling_prompt(row.prev_utt, row.utterance))
+        label = call_ollama(create_labeling_prompt(row.prev_utt, row.utterance, context))
         clean_df.at[i, "auto_label"] = label
 
     clean_df.to_csv(LABELED_CLEANED_FILE, index=False)
