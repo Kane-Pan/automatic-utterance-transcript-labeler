@@ -1,53 +1,113 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.metrics import cohen_kappa_score, confusion_matrix, ConfusionMatrixDisplay
+import numpy as np
 from scipy.stats import kendalltau
+from sklearn.metrics import cohen_kappa_score, confusion_matrix
 from pathlib import Path
+import krippendorff
 
-# Load data and paths
+# Load data
 BASE_DIR = Path(__file__).resolve().parent.parent
-MANUAL_FILE = BASE_DIR/"data"/"manually_labeled_transcript.csv"
-AUTO_FILE = BASE_DIR/"results"/"labeled_transcript.csv"
 
-auto_df = pd.read_csv(AUTO_FILE)
-manual_df = pd.read_csv(MANUAL_FILE)
+# n CSV paths (add more if desired)
+csv_files = [
+    BASE_DIR/"data"/"CALLHOME_TEST_Akash.csv",
+    BASE_DIR/"data"/"CALLHOME_TEST_Itamar.csv",
+    BASE_DIR/"data"/"CALLHOME_TEST_Kane.csv",
+    BASE_DIR/"data"/"CALLHOME_TEST_AI.csv"
+]
 
-df = pd.merge(
-    auto_df[['turn_id', 'final_label']].rename(columns={'final_label': 'auto_label'}),
-    manual_df[['turn_id', 'final_label']].rename(columns={'final_label': 'manual_label'}),
-    on='turn_id',
-    how='inner'
-)
+# names = [name = Path(path).stem.replace("CALLHOME_TEST_", "") for path in csv_files]
 
+# Choose "info_score" or "relationship_score"
+LABEL_COL = "relational_score"
+LABELS = [1, 2, 3, 4, 5]
 
-for col in ['auto_label', 'manual_label']:
-    df[col] = df[col].astype(str)  # make sure it's a string
-    df[col] = df[col].str.lower()
-    df[col] = df[col].replace('backchannel', '0') # replace backchannels with '0' for comparison
+# Merge all raters on row_id (since new CSVs lack turn_id)
+merged = None
+rater_cols = []
 
-auto = pd.to_numeric(df['auto_label'], errors='coerce')
-manual = pd.to_numeric(df['manual_label'], errors='coerce')
+for path in csv_files:
+    df = pd.read_csv(path)
+    name = Path(path).stem.replace("CALLHOME_TEST_", "")
+    col_name = f"{LABEL_COL}_{name}"
 
-tau = kendalltau(auto, manual, nan_policy='omit')
-kappa = cohen_kappa_score(auto, manual, labels=[0, 1, 2, 3, 4, 5], weights='quadratic')
-C = confusion_matrix(manual, auto, labels=[0, 1, 2, 3, 4, 5])
+    # create a stable row index to align rows across files
+    df = df.reset_index().rename(columns={"index": "row_id"})
+    df = df[['row_id', LABEL_COL]].rename(columns={LABEL_COL: col_name})
 
-print(f"Kendall's Tau: {tau.statistic:.4f}, p-value: {tau.pvalue:.4g}")
-print(f"Cohen's Kappa: {kappa:.4f}")
+    if merged is None:
+        merged = df
+    else:
+        merged = pd.merge(merged, df, on='row_id', how='inner')
 
-disp = ConfusionMatrixDisplay(confusion_matrix=C, display_labels=[0, 1, 2, 3, 4, 5])
-disp.plot(values_format='d')
-plt.title("Manual vs AI Utterance Labels (Counts)")
-plt.xlabel("AI-predicted label")
-plt.ylabel("Manually assigned label")
-plt.tight_layout()
-plt.show()
+    rater_cols.append(col_name)
 
-C_norm = confusion_matrix(manual, auto, labels=[0, 1, 2, 3, 4, 5], normalize='true')
-disp_norm = ConfusionMatrixDisplay(confusion_matrix=C_norm, display_labels=[0, 1, 2, 3, 4, 5])
-disp_norm.plot(values_format='.2f')
-plt.title("Manual vs AI Utterance Labels (Row-Normalized)")
-plt.xlabel("AI-predicted label")
-plt.ylabel("Manually assigned label")
-plt.tight_layout()
-plt.show()
+# Clean to numeric; blank becomes NaN
+for col in rater_cols:
+    merged[col] = merged[col].astype(str).str.strip()
+    merged[col] = merged[col].replace({'': np.nan, 'nan': np.nan})
+    merged[col] = pd.to_numeric(merged[col], errors='coerce')
+
+# Krippendorff's alpha across all raters
+if krippendorff is not None:
+    reliability_data = merged[rater_cols].to_numpy().T
+    alpha_ord = krippendorff.alpha(reliability_data=reliability_data, level_of_measurement='ordinal')
+else:
+    alpha_ord = np.nan
+
+print(f"\n{LABEL_COL}: Multi-rater agreement:")
+print(f"Krippendorff's alpha (ordinal): {alpha_ord if not np.isnan(alpha_ord) else 'NA (install `krippendorff`)'}")
+
+# Pairwise Kendall's tau-b and quadratic-weighted Cohen's kappa
+pairwise = []
+i = 0
+while i < len(rater_cols):
+    j = i + 1
+    while j < len(rater_cols):
+        a_col = rater_cols[i]
+        b_col = rater_cols[j]
+
+        sub = merged[[a_col, b_col]].dropna()
+        a = pd.to_numeric(sub[a_col], errors='coerce')
+        b = pd.to_numeric(sub[b_col], errors='coerce')
+        mask = (~a.isna()) & (~b.isna())
+        a = a[mask]
+        b = b[mask]
+
+        if len(a) == 0:
+            print(f"\n{a_col} vs {b_col}: no overlapping labeled items.")
+            j += 1
+            continue
+
+        tau = kendalltau(a, b, nan_policy='omit')  # τ-b
+        kappa = cohen_kappa_score(a, b, labels=LABELS, weights='quadratic')
+
+        pairwise.append({
+            "rater_a": a_col,
+            "rater_b": b_col,
+            "n_items": int(len(a)),
+            "kendall_tau_b": float(tau.statistic),
+            "kendall_p": float(tau.pvalue),
+            "cohen_kappa_quadratic": float(kappa),
+        })
+
+        # Confusion matrices
+        C = confusion_matrix(b, a, labels=LABELS)
+        print(f"\nConfusion matrix for {a_col} vs {b_col}:")
+        print(pd.DataFrame(C,index=[f"{b_col}_{l}" for l in LABELS], columns=[f"{a_col}_{l}" for l in LABELS]))
+
+        j += 1
+    i += 1
+
+# Print summary
+if pairwise:
+    print(f"\n{LABEL_COL}: Pairwise agreement =")
+    for r in pairwise:
+        print(
+            f"{r['rater_a']} vs {r['rater_b']} Stats: "
+            f"n={r['n_items']}, "
+            f"τ-b={r['kendall_tau_b']:.4f} (p={r['kendall_p']:.4g}), "
+            f"κ_quad={r['cohen_kappa_quadratic']:.4f}"
+        )
+else:
+    print("\nNo pairwise results to report.")

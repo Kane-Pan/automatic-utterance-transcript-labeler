@@ -1,0 +1,34 @@
+info_score: Multi-rater agreement:
+Krippendorff's alpha (ordinal): 0.3425381471758313
+
+Confusion matrix for info_score_Akash vs info_score_AI:
+                 info_score_Akash_1  info_score_Akash_2  info_score_Akash_3  info_score_Akash_4  info_score_Akash_5
+info_score_AI_1                  38                   4                   2                   3                   0
+info_score_AI_2                  74                  16                   9                   2                   0
+info_score_AI_3                  20                  23                  38                   5                   3
+info_score_AI_4                  12                  12                  13                   4                   1
+info_score_AI_5                   0                   0                   0                   0                   0
+
+Confusion matrix for info_score_Itamar vs info_score_AI:
+                 info_score_Itamar_1  info_score_Itamar_2  info_score_Itamar_3  info_score_Itamar_4  info_score_Itamar_5
+info_score_AI_1                   14                    7                    0                    0                    0
+info_score_AI_2                   43                   18                    0                    0                    0
+info_score_AI_3                   28                   46                    7                    0                    0
+info_score_AI_4                    9                   25                    2                    0                    0
+info_score_AI_5                    0                    0                    0                    0                    0
+
+Confusion matrix for info_score_Kane vs info_score_AI:
+                 info_score_Kane_1  info_score_Kane_2  info_score_Kane_3  info_score_Kane_4  info_score_Kane_5
+info_score_AI_1                 19                 13                  9                  3                  0
+info_score_AI_2                 40                 42                 13                  3                  1
+info_score_AI_3                  5                 20                 41                 19                  3
+info_score_AI_4                  8                  6                 11                 15                  2
+info_score_AI_5                  0                  0                  0                  0                  0
+
+info_score: Pairwise agreement =
+info_score_Akash vs info_score_Itamar Stats: n=199, τ-b=0.5544 (p=6.82e-18), κ_quad=0.4245
+info_score_Akash vs info_score_Kane Stats: n=273, τ-b=0.6798 (p=1.703e-39), κ_quad=0.6786
+info_score_Akash vs info_score_AI Stats: n=279, τ-b=0.4006 (p=9.298e-15), κ_quad=0.3437
+info_score_Itamar vs info_score_Kane Stats: n=199, τ-b=0.5815 (p=1.023e-19), κ_quad=0.2711
+info_score_Itamar vs info_score_AI Stats: n=199, τ-b=0.3293 (p=3.397e-07), κ_quad=0.1532
+info_score_Kane vs info_score_AI Stats: n=273, τ-b=0.3865 (p=3.435e-14), κ_quad=0.4172

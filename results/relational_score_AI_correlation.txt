@@ -1,0 +1,34 @@
+relational_score: Multi-rater agreement:
+Krippendorff's alpha (ordinal): 0.03711085824873073
+
+Confusion matrix for relational_score_Akash vs relational_score_AI:
+                       relational_score_Akash_1  relational_score_Akash_2  relational_score_Akash_3  relational_score_Akash_4  relational_score_Akash_5
+relational_score_AI_1                        16                         8                         6                         2                         0
+relational_score_AI_2                        45                        29                        12                         0                         0
+relational_score_AI_3                        53                        34                        18                         3                         0
+relational_score_AI_4                        20                        21                         9                         3                         0
+relational_score_AI_5                         0                         0                         0                         0                         0
+
+Confusion matrix for relational_score_Itamar vs relational_score_AI:
+                       relational_score_Itamar_1  relational_score_Itamar_2  relational_score_Itamar_3  relational_score_Itamar_4  relational_score_Itamar_5
+relational_score_AI_1                          4                          7                          8                          0                          0
+relational_score_AI_2                         17                         25                          4                          0                          0
+relational_score_AI_3                         28                         44                         15                          0                          0
+relational_score_AI_4                          8                         30                          9                          0                          0
+relational_score_AI_5                          0                          0                          0                          0                          0
+
+Confusion matrix for relational_score_Kane vs relational_score_AI:
+                       relational_score_Kane_1  relational_score_Kane_2  relational_score_Kane_3  relational_score_Kane_4  relational_score_Kane_5
+relational_score_AI_1                        1                        4                       18                        5                        0
+relational_score_AI_2                       14                       41                       24                        5                        0
+relational_score_AI_3                        7                       45                       48                        8                        0
+relational_score_AI_4                        3                       12                       26                       11                        0
+relational_score_AI_5                        0                        0                        0                        0                        0
+
+relational_score: Pairwise agreement =
+relational_score_Akash vs relational_score_Itamar Stats: n=199, τ-b=0.1347 (p=0.03428), κ_quad=0.1618
+relational_score_Akash vs relational_score_Kane Stats: n=272, τ-b=0.2929 (p=5.188e-08), κ_quad=0.2342
+relational_score_Akash vs relational_score_AI Stats: n=279, τ-b=0.0692 (p=0.1866), κ_quad=0.0444
+relational_score_Itamar vs relational_score_Kane Stats: n=198, τ-b=0.1952 (p=0.002323), κ_quad=0.1310
+relational_score_Itamar vs relational_score_AI Stats: n=199, τ-b=0.0477 (p=0.4472), κ_quad=0.0100
+relational_score_Kane vs relational_score_AI Stats: n=272, τ-b=0.1095 (p=0.03799), κ_quad=0.0962

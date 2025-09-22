@@ -4,7 +4,7 @@ import pandas as pd
 from tqdm import tqdm
 import requests
 
-#create prompt, separate for info-transfer and relationship-building scores
+# create prompt, separate for info-transfer and relationship-building scores
 def create_labeling_prompt(prev_utt, cur_utt, label_type) -> str:
     """
     Build a prompt for one 1–5 label.
@@ -67,18 +67,19 @@ def call_ollama(prompt) -> str:
                 return ch
     except Exception:
         return "1"
+
     return "1"
 
 def run_labeler():
-    # read the new CALLHOME-style csv: columns are "speaker" and "utterance"
+    # read the CALLHOME csv
     transcript = pd.read_csv(CALLHOME_FILE)
     transcript = transcript.reset_index(drop=True)
 
     # add output columns
-    transcript["social_score"] = ""
+    transcript["relational_score"] = ""
     transcript["info_score"] = ""
 
-    # go line-by-line, use previous utterance as context
+    # go one line atr a time use previous utterance as context
     for i, row in tqdm(transcript.iterrows(), total=len(transcript), desc="Labeling..."):
         prev_utt = transcript.at[i-1, "utterance"] if i > 0 else ""
 
@@ -89,7 +90,7 @@ def run_labeler():
         social_label = call_ollama(social_prompt)
 
         transcript.at[i, "info_score"] = info_label
-        transcript.at[i, "social_score"] = social_label
+        transcript.at[i, "relational_score"] = social_label
 
     transcript.to_csv(OUTPUT_LABELED, index=False)
     print(f"Wrote labelled transcript {OUTPUT_LABELED} with ({len(transcript)} rows)")
@@ -97,9 +98,9 @@ def run_labeler():
 if __name__ == "__main__":
     BASE_DIR = Path(__file__).resolve().parent.parent
 
-    # input/output for the CALLHOME-format csv
+    # input and output directory for the CALLHOME-format csv
     CALLHOME_FILE = BASE_DIR/"data"/"CALLHOME_TEST.csv"
-    OUTPUT_LABELED = BASE_DIR/"results"/"labeled_transcript.csv"
+    OUTPUT_LABELED = BASE_DIR/"results"/"CALLHOME_TEST_AI.csv"
 
     api_url = "http://localhost:11434/api/generate"
     ollama_model = "hf.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF:Q4_K_M"
