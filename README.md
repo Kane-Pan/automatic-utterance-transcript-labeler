@@ -1,4 +1,4 @@
-# Automatic vs Reflective Classifier for Natural Conversation Utterances
+# Automatic vs Reflective Classifier for Natural Conversation Utterances (OUTDATED: TO BE UPDATED SOON)
 
 This repo contains a **two-pass pipeline** that labels each utterance in a natural conversation Candor
 transcript as:
