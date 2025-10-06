@@ -99,12 +99,12 @@ if __name__ == "__main__":
     BASE_DIR = Path(__file__).resolve().parent.parent
 
     # input and output directory for the CALLHOME-format csv
-    CALLHOME_FILE = BASE_DIR/"results"/"cleaned_transcript.csv"
-    OUTPUT_LABELED = BASE_DIR/"results"/"CALLHOME_TEST_AI.csv"
+    CALLHOME_FILE = Path(os.getenv("CALLHOME_FILE", str(BASE_DIR / "data" / "CALLHOME_TEST.csv")))
+    OUTPUT_LABELED = Path(os.getenv("OUTPUT_LABELED", str(BASE_DIR / "results" / "CALLHOME_TEST_AI.csv")))
 
-    api_url = "http://localhost:11434/api/generate"
-    ollama_model = "hf.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF:Q4_K_M"
-    DEFAULT_MAX_TOK = 16
-    DEFAULT_TEMP = 0.0
+    api_url = os.getenv("OLLAMA_API_URL", "http://localhost:11434/api/generate")
+    ollama_model = os.getenv("OLLAMA_MODEL", "hf.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF:Q4_K_M")
+    DEFAULT_MAX_TOK = int(os.getenv("OLLAMA_MAX_TOK", "16"))
+    DEFAULT_TEMP = float(os.getenv("OLLAMA_TEMP", "0.0"))
 
     run_labeler()
