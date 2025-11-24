@@ -1,0 +1,208 @@
+speaker,utterance,relational_score,info_score
+MA,Hello (ascending),3,1
+SON,Hello ma (arrow ignored),3,1
+MA,"Mazel tov, yeah.",3,2
+SON,Mazel tov (congratulations),3,2
+MA,Last night was the Vortex.,3,3
+SON,"[UNINTELLIGIBLE], [UNINTELLIGIBLE].",2,1
+MA,Wednesday night is the date.,2,3
+SON,"I'm unable to provide the cleaned sentence since there is no noisy text provided in the question. Here is an example of how the cleaning process works with a noisy input:
+
+Noisy: ""∙hhh they had this: little sce:ne where the gu::ys::→""
+Clean: they had this little scene where the guys.",3,3
+MA,you could come in,3,2
+SON,"I have to speak to Tatie, because I have a ride and he told me that.",3,4
+MA,uh-huh,2,1
+SON,"we'll pass by Monroe, we could pick up Esther.",3,4
+MA,"okay, one second",3,2
+SON,That's what I'll ask him.,3,2
+MA,Ephraim [raising his pitch]: Upward.,2,2
+EPH,Yes,3,2
+MA,I can't hear,2,2
+EPH,Oh (exclusion),2,1
+MA,[NOISE] → Noise was present in the conversation.,2,1
+EPH,"Hello, Natanel.",3,1
+SON,yes (moving up),3,2
+EPH,"mazel tov, mazel tov.",4,2
+SON,Mazel tov.,3,1
+EPH,Unintelligible [exclamation mark],2,1
+SON,That's true.,3,2
+EPH,"His name is Joseph, laugh, it's Shalom Aleichem.",3,4
+SON,what,2,2
+EPH,"Mazel tov, mazel tov.",3,1
+SON,Mazeh tow (Congratulations),3,2
+EPH,coming for the Vort (arrow removed),3,3
+SON,"you, are Yiddish Hashem",3,1
+EPH,"I'm your God alright, I'll see you later. Who are you staying with?",2,2
+SON,what: was that: upward?,2,2
+EPH,You staying by who in Lakewood.,3,3
+SON,I'm not in Lakewood,2,2
+EPH,"yes, you",2,1
+SON,camp,2,3
+EPH,"In the camp yeshiva, yeah... Alright, I'll see you later, I'll speak to you then.",3,2
+SON,yes,3,1
+EPH,"don't forget your hat, going in with Yoel.",3,3
+SON,you: yeah.,2,2
+EPH,What's happening Mazel tov.,3,4
+SON,Mazel tov.,3,1
+EPH,Everything's okay.,3,2
+SON,Baruch ha-Shem (Bless the name),3,2
+EPH,You said I I remember you telling me when to call you. You called then.,3,3
+SON,"I knew you were probably getting ready, so you're home.",3,3
+EPH,you asked what's up,3,2
+SON,Baruch Hashem (as),3,1
+EPH,Everything's good in camp.,3,2
+SON,Great,3,1
+EPH,you learning [UNINTELLIGIBLE],3,2
+SON,Good.,3,2
+EPH,learning is good [exclamation mark].,3,3
+SON,you,3,2
+EPH,you got any of my letters,3,3
+SON,what: went up,2,2
+EPH,you get my sun tan lotion,3,3
+SON,No.,1,1
+EPH,No: [exclamation mark] upward arrow,2,1
+SON,No.,2,1
+EPH,"I put it by Reich, probably didn't see it. Left it hanging on his door because he wasn't home. I wanted to bring it to him but he didn't give it to me.",3,4
+SON,"he went into the city yesterday, umm, two days ago.",2,2
+EPH,who went,2,2
+SON,rich,2,1
+EPH,he's coming back,3,3
+SON,I don't know if he probably won't come back here.,2,2
+EPH,"I'll find out what happened, I'll have to call him.",3,3
+SON,okay,2,1
+EPH,I'll find out what's going on there.,3,3
+SON,Baruch Hashem,2,1
+EPH,you're going to be able to come home.,3,4
+SON,I got a rabbi's going in.,2,2
+EPH,yes,2,2
+SON,tomorrow at one o'clock,3,4
+EPH,uh huh huh → (Affirmative sounds),3,1
+SON,And I asked him if he has room.,3,3
+EPH,yes (forward arrow removed),2,2
+SON,he said he's going to have a 15-year-old girl in the back.,2,4
+EPH,"you, ah went",2,2
+SON,"it's up to you, if you want it, if you don't want that I.",3,3
+EPH,"It's no problem, just she will be there.",3,3
+SON,what,2,2
+EPH,She's going to be there.,3,3
+SON,correct,3,2
+EPH,You put epissas a bag in the middle and that's all.,2,3
+SON,"oh but and then and I asked him, Esther asked if I",3,2
+EPH,yes,2,2
+SON,He said he could pick her up if she waits like on,3,2
+EPH,uh-huh,2,1
+SON,she could sit in between the girl and me,3,3
+EPH,"Right, uh-huh. I don't know how.",2,2
+SON,I have to call Esther now,2,2
+EPH,"""how""",2,2
+SON,I have to call Esther now,2,3
+EPH,"she waited on the road, I mean",3,2
+SON,"her calling card number, I'll call Esther now",2,4
+EPH,what calling card number (arrow up),2,2
+SON,Esther's calling card,3,3
+EPH,what do you mean Esther doesn't have a calling (original question not addressed to Esther),2,2
+SON,"oh yeah, whatever, we could call a specific time.",2,2
+EPH,I don't know what you mean.,2,2
+SON,she told me yesterday you sent her a calling card,3,3
+EPH,"I sent Esther a calling card, but she has the number, I don't know.",3,3
+SON,silent [UNINTELLIGIBLE],2,1
+EPH,What do you need it for,3,3
+SON,want to call Esther today,3,3
+EPH,you want to call on her card,2,3
+SON,Yes,2,2
+EPH,"Let me see, maybe I wrote down the number here. You have a pen.",3,3
+SON,I don't know I have her telephone number.,3,3
+EPH,You need a whole bunch of numbers. I understand.,2,2
+SON,Oh.,2,1
+EPH,you have a pen,2,3
+SON,got one minute,2,2
+EPH,"How fast can you get one? I don't know; I don't see the number here anyway [BREATHING]. I don't see it here, I wrote it down somewhere else. I don't know. I wrote it, there it is [arrow pointing up]. No, that's not it. I don't have the number anyway. Oh, maybe this is it [arrow pointing up]. Yes, I have it.",2,2
+SON,Hello,2,1
+EPH,yes,2,2
+SON,yes [breathy voice],3,1
+EPH,"You do like this, dial U-eight.",2,3
+SON,"one hundred and eighty [softly, to himself]",2,2
+EPH,"six, two six.",2,2
+SON,yes,2,2
+EPH,three nine nine eight,2,2
+SON,"nine, nine, eight, yes.",2,2
+EPH,"and then you'll hear a voice tone. It'll say, put in your code number.",2,3
+SON,"yeah, so what's this",2,2
+EPH,It's six twenty-eight.,2,3
+SON,"six, two, eight",2,1
+EPH,nine twenty-five,2,2
+SON,nine twenty-five,2,1
+EPH,two seven,2,2
+SON,two seven,2,1
+EPH,"Eight, nine.",2,2
+SON,eight nine wow.,2,1
+EPH,"and then you'll hear a voice tone. It will tell you to dial the number, your number that you're calling.",2,3
+SON,diagonal [UNINTELLIGIBLE] (0.5) yeah,2,2
+EPH,you just dial her number,2,3
+SON,"Seven, eight, three, eight, eight, two, one",2,2
+EPH,"Her number, I don't know it. You want to know her number?",2,2
+SON,She gave it to me last night. I have enough now.,3,4
+EPH,"Yes, I agree. But I don't think it's a good idea for her to wait. It's not a good idea.",3,2
+SON,what's up,2,1
+EPH,"She shouldn't wait by the road, let her go instead. She can't know when he'll arrive and it's risky for you to wait at the seventeenth [location].",4,4
+SON,"not really on the road, he told me (he wasn't) on the highway.",3,3
+EPH,yes,2,2
+SON,"He's on the road, inside the camp, not in a bunkhouse or something.",3,4
+EPH,he'll go into Monroe.,2,3
+SON,"He told me he's passing Monroe anyway, it's on the [NOISE]",3,3
+EPH,It's out of the way (repeat).,2,2
+SON,So,3,2
+EPH,"I was at, I just went to Monroe. It's out of the way.",3,3
+SON,Oh (paused),2,1
+EPH,"and even to go into Monroe, and to go off the highway",3,3
+SON,"""hey man, where ya at?""",3,2
+EPH,"don't be matriarchs like him any further. You just, um.",2,1
+SON,"yes, well [UNINTELLIGIBLE]",2,2
+EPH,"you just tell her to not do it, that's what Tatie@s said.",3,3
+SON,I'll tell her to get her own transportation.,3,3
+EPH,"tell her to find her own ride, or she could take a bus, so.",2,2
+SON,Ok,2,1
+EPH,"If she has any trouble, she should call me. But I don't.",3,3
+SON,"I asked him already, so I'll tell him to forget about it, she can do it.",3,3
+EPH,"You just need to ask him, you can tell him.",2,2
+SON,Yes,2,2
+EPH,"That's not a problem, and you just said that I don't want it.",3,2
+SON,[UNINTELLIGIBLE],2,1
+EPH,it took us an hour to find Esther's bunk one time when we were in [once],3,3
+SON,okay,2,1
+EPH,"It's a forkrunsten place, so tell Esther, forget about that, she should find her own ride home if she can't. Otherwise, she should call me.",2,4
+SON,Okay,2,1
+EPH,"we'll see you, im_yirtse_hashem@s",3,1
+SON,she should just go home. She shouldn't call you.,2,3
+EPH,what went up,2,2
+SON,"if she finds a ride, she should just take it.",3,3
+EPH,"yes if she finds a ride come home if she encounters any issues today, let her call me.",4,3
+SON,Ok,3,1
+EPH,you'll be home around 3:30 or 4.,2,4
+SON,"he's leaving at one o'clock, said so.",2,3
+EPH,He's coming to Borough Park,3,3
+SON,"I think so, yeah.",3,2
+EPH,uh-huh,2,1
+SON,to where I live,3,3
+EPH,anything you want to take care of,3,2
+SON,glasses broke today,3,4
+EPH,Your glasses broke.,3,3
+SON,"you could just get a new handle, he might say.",3,3
+EPH,bring all parts home,2,3
+SON,yes,2,2
+EPH,"okay, unintelligible (moving up)",3,2
+SON,okay,2,1
+EPH,"I'll see you, im_yirtse_hashem@s, tomorrow.",3,3
+SON,okay,2,1
+EPH,"The Vortex is in Flatbush, at East 17th Street.",2,4
+SON,a hall (goes up),2,2
+EPH,"yes, a hall in a school",3,3
+SON,Chaya is nice and then little,2,2
+EPH,"Chaya's beautiful, we have pictures. They took pictures, right?",3,3
+SON,It's by their house.,3,3
+EPH,"In their house, yeah, I'll tell you everything when you come home.",4,4
+SON,Okay,3,1
+EPH,"Okay, we're looking forward to seeing you. (Zais gezunts was ignored)",3,3
+SON,okay bye,2,1
+EPH,Colt took,2,3

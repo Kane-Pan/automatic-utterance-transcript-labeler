@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
@@ -70,6 +69,7 @@ def call_ollama(prompt) -> str:
 
     return "1"
 
+
 def run_labeler():
     # read the CALLHOME csv
     transcript = pd.read_csv(CALLHOME_FILE)
@@ -79,9 +79,9 @@ def run_labeler():
     transcript["relational_score"] = ""
     transcript["info_score"] = ""
 
-    # go one line atr a time use previous utterance as context
+    # go one line at a time; use previous utterance as context
     for i, row in tqdm(transcript.iterrows(), total=len(transcript), desc="Labeling..."):
-        prev_utt = transcript.at[i-1, "utterance"] if i > 0 else ""
+        prev_utt = transcript.at[i - 1, "utterance"] if i > 0 else ""
 
         info_prompt = create_labeling_prompt(prev_utt, row.utterance, "info")
         social_prompt = create_labeling_prompt(prev_utt, row.utterance, "social")
@@ -95,15 +95,15 @@ def run_labeler():
     transcript.to_csv(OUTPUT_LABELED, index=False)
     print(f"Wrote labelled transcript {OUTPUT_LABELED} with ({len(transcript)} rows)")
 
+
 if __name__ == "__main__":
+
     BASE_DIR = Path(__file__).resolve().parent.parent
+    CALLHOME_FILE = BASE_DIR / "data" / "CANDOR_cleaned_2.csv"
+    OUTPUT_LABELED = BASE_DIR / "results" / "CANDOR_result_2.csv"
 
-    # input and output directory for the CALLHOME-format csv
-    CALLHOME_FILE = BASE_DIR/"results"/"cleaned_transcript.csv"
-    OUTPUT_LABELED = BASE_DIR/"results"/"CALLHOME_TEST_AI.csv"
-
-    api_url = "http://localhost:11434/api/generate"
-    ollama_model = "hf.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF:Q4_K_M"
+    api_url = "http://127.0.0.1:11434/api/generate"
+    ollama_model = "mistral:instruct"
     DEFAULT_MAX_TOK = 16
     DEFAULT_TEMP = 0.0
 

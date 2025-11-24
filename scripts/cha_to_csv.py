@@ -7,8 +7,8 @@ from pathlib import Path
 # Paths
 parent_dir = Path(__file__).parent.parent
 
-input_file = parent_dir/"eng"/"6348.cha"
-output_file = parent_dir/"data"/"CALLHOME_TEST.csv"
+input_file = parent_dir/"raw_data"/"CALLHOME_2.cha"
+output_file = parent_dir/"data"/"CALLHOME_cleaned_2.csv"
 
 
 def clean_utterance(utterance: str) -> str:

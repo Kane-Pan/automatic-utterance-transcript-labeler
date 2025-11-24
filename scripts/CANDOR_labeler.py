@@ -7,8 +7,8 @@ from tqdm import tqdm
 # Step 1: remove backchannels from the transcript
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-INPUT_FILE = BASE_DIR/"raw_data"/"CANDOR_2.csv"
-OUTPUT_FILE = BASE_DIR/"data"/"no_backchannel_transcript.csv"
+INPUT_FILE = BASE_DIR/"data"/"CANDOR_cleaned_1.csv"
+OUTPUT_FILE = BASE_DIR/"results"/"CANDOR_nb_transcript.csv"
 
 API = "http://localhost:11434/api/generate"
 LLM_MODEL = "mistral:7b-instruct"
@@ -41,7 +41,7 @@ def is_noise_word(row, prev):
     return True
 
 def build_bc_prompt(prev_utt, cur_utt, next_utt, context_before: str = "", context_after: str = ""):
-    return f"""Decide if the utterance next to CURRENT is a filler or back-channel.
+    return f"""Decide if the utterance next to CURRENT is a filler or back‑channel.
 Remove it if it adds zero informational content.
 Examples:
 PREVIOUS: "Are you doing alright?"
@@ -84,12 +84,14 @@ def ask_llm_for_keep(prev_txt: str, cur_txt: str, next_txt: str,
         r.raise_for_status()
         text = r.json().get("response", "")
 
+        # sometimes returns extra text; take the first word as the verdict
         verdict = text.strip().split()[0].upper()
         if verdict in {"KEEP", "REMOVE"}:
             return verdict
     except Exception:
         return "KEEP"
 
+    # default to keep
     return "KEEP"
 
 def run_backchannel():
@@ -108,6 +110,8 @@ def run_backchannel():
         if i + 1 < total:
             next_row = df.iloc[i + 1]
 
+        # decide keep/remove
+        # True if keep, False if remove
         decision = None
 
         if row.n_words >= 3 or row.end_question or row.questions:
@@ -117,11 +121,13 @@ def run_backchannel():
                 decision = False
             else:
                 if is_noise_word(row, prev):
+                # Remove one‑word utterances that are not answers or fillers
                     decision = False
                 else:
                     if row.n_words == 2:
                         decision = True
                     else:
+                        # fallback to LLM
                         if prev is not None:
                             prev_txt = prev.utterance
                         else:
@@ -134,6 +140,7 @@ def run_backchannel():
                         else:
                             next_txt = "<END>"
 
+                        # Prepare additional context for the LLM: two utterances back and two ahead if available
                         context_before = "<START>"
                         if i > 1:
                             context_before = df.iloc[i - 2].utterance
@@ -151,14 +158,16 @@ def run_backchannel():
 
     cleaned = df.loc[keep_mask].copy()
     cleaned.to_csv(OUTPUT_FILE, index=False)
-    print(f"Wrote no-backchannel transcript {OUTPUT_FILE} with ({len(cleaned)} rows)")
+    print(f"Wrote no‑backchannel transcript {OUTPUT_FILE} with ({len(cleaned)} rows)")
 
 # Step 2: merge utterances if necessary
 
+# file paths
 BASE_DIR_MERGE = Path(__file__).resolve().parent.parent
-INPUT_FILE_MERGE = BASE_DIR_MERGE/"data"/"no_backchannel_transcript.csv"
-OUTPUT_FILE_MERGE = BASE_DIR_MERGE/"data"/"CANDOR_cleaned_2.csv"
+INPUT_FILE_MERGE = BASE_DIR_MERGE/"results"/"CANDOR_nb_transcript.csv"
+OUTPUT_FILE_MERGE = BASE_DIR_MERGE/"results"/"CANDOR_cleaned_transcript.csv"
 
+# LLM settings
 API_MERGE = "http://localhost:11434/api/generate"
 LLM_MODEL_MERGE = "mistral:7b-instruct"
 DEFAULT_MAX_TOK_MERGE = 30
@@ -169,10 +178,12 @@ SKIP_WORDS_LIMIT = 5
 MERGE_PAUSE = 1.0
 MEDIUM_GAP = 4.0
 
+# Punctuation sets
 PRIMARY_PUNCTS = {".", "?", "!"}
 SECONDARY_PUNCTS = {'"', "”", "'", ")"}
 
 def has_sentence_end(text):
+    # Strip trailing punctuation and check if it ends with a primary punctuation
     t = text.rstrip()
     while t and t[-1] in SECONDARY_PUNCTS:
         t = t[:-1]
@@ -208,6 +219,9 @@ CONTEXT AFTER: "{context_after}"
 
 def ask_llm_for_merge(prev_text: str, cur_text: str,
                       context_before: str = "", context_after: str = ""):
+    """
+    Ask the local LLM whether to merge two successive utterances by the same speaker.
+    """
     prompt = build_merge_prompt(prev_text, cur_text, context_before, context_after)
     try:
         r = requests.post(API_MERGE, json={
@@ -221,6 +235,7 @@ def ask_llm_for_merge(prev_text: str, cur_text: str,
         r.raise_for_status()
         body = r.json().get("response", "")
 
+        # sometimes returns extra words; take the first word as the decision
         decision = body.strip().split()[0].upper()
         if decision in ("MERGE", "KEEP"):
             return decision
@@ -230,6 +245,7 @@ def ask_llm_for_merge(prev_text: str, cur_text: str,
     return "KEEP"
 
 def is_incomplete_segment(txt):
+    # check if utterance ends cleanly
     return (not has_sentence_end(txt))
 
 def can_skip_interjection(row, base_unfinished):
@@ -238,13 +254,20 @@ def can_skip_interjection(row, base_unfinished):
         return False
     if base_unfinished:
         return True
+
+    # only keep if question-like
     return not (row.end_question or row.questions)
 
 def decides_merge(r1, r2, context_before: str = "", context_after: str = ""):
+    """
+    Determine whether two utterances by the same speaker should be merged.
+    """
     pause = r2.start - r1.stop
+    # immediate continuation or dangling sentence
     if pause < MERGE_PAUSE or is_incomplete_segment(r1.utterance):
         return True
     
+    # medium gap/not obvious -> ask LLM
     if pause < MEDIUM_GAP:
         return ask_llm_for_merge(r1.utterance, r2.utterance,
                                  context_before, context_after) == "MERGE"
@@ -263,33 +286,44 @@ def run_merger():
         curr["source_rows"] = [int(curr.turn_id)]
         idx2 = idx + 1
 
+        # attempt to merge next rows
         while idx2 < len(transcript_df):
             nxt = transcript_df.iloc[idx2]
 
             if nxt.speaker == curr.speaker:
+                # Use additional context for the merge decision
                 context_before_merge = "<START>" if idx == 0 else transcript_df.iloc[idx - 1].utterance
                 context_after_merge = "<END>" if (idx2 + 1) >= len(transcript_df) else transcript_df.iloc[idx2 + 1].utterance
                 if decides_merge(curr, nxt, context_before_merge, context_after_merge):
+                    # merge the utterances and update the current row
                     curr.utterance += " " + nxt.utterance.lstrip()
                     curr.stop = nxt.stop
                     curr.n_words += nxt.n_words
                     curr.source_rows.append(int(nxt.turn_id))
                     idx2 += 1
                     continue
+                # Note: could tweak threshold here if needed
                 break
 
+            # handle small interjections from the other speaker
             if can_skip_interjection(nxt, is_incomplete_segment(curr.utterance)):
+                # Determine if the interjection is a simple filler/back‑channel based on tokens and length
                 interjection_tokens = tokens(nxt.utterance)
+
+                # Do not skip meaningful utterances solely based on length.
                 is_filler_interjection = set(interjection_tokens).issubset(filler_words)
                 if is_filler_interjection:
+                    # If the utterance following the interjection is from the same speaker, consider merging across it
                     if idx2 + 1 < len(transcript_df) and transcript_df.iloc[idx2 + 1].speaker == curr.speaker:
                         maybe = transcript_df.iloc[idx2 + 1]
                         context_before_merge = "<START>" if idx == 0 else transcript_df.iloc[idx - 1].utterance
                         context_after_merge = "<END>" if (idx2 + 2) >= len(transcript_df) else transcript_df.iloc[idx2 + 2].utterance
                         if decides_merge(curr, maybe, context_before_merge, context_after_merge):
+                            # Skip the interjection and merge the next utterance
                             idx2 += 1
                             continue
                 break
+            # If we cannot skip, break to emit the current utterance
             break
 
         output_list.append(curr)
@@ -301,6 +335,7 @@ def run_merger():
     result_df.to_csv(OUTPUT_FILE_MERGE, index=False)
     print(f"Merged transcript at {OUTPUT_FILE_MERGE} with {len(result_df)} rows")
 
+# run the scripts
 if __name__ == "__main__":
     run_backchannel()
     run_merger()
